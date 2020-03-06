@@ -36,8 +36,7 @@ public class MainController {
 
     @RequestMapping(value = "Process", method = RequestMethod.POST, params = "action=push")
     public String push(@RequestParam(value = "pushInput", defaultValue = "")String pushInput, HttpSession session){
-        logger.trace(pushInput);
-        if(pushInput != "" || pushInput != null){
+        if(pushInput != null && ! pushInput.isEmpty() ){
             StackObj stack = (StackObj) session.getAttribute("stack");
             stack.setInput(pushInput);
             session.setAttribute("stack", stack);

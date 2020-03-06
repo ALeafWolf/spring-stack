@@ -5,20 +5,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
-public class StackObj {
+public class StackObj implements Serializable {
     private Logger logger = LoggerFactory.getLogger(StackObj.class);
 
     private Stack<String> stack;
+    @NotBlank
     private String input;
     private ArrayList<String> displayStack;
 
     public StackObj() {
         stack = new Stack<String>();
-        input = "";
         displayStack = new ArrayList<String>();
 
     }
