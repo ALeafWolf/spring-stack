@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css" th:href="@{css/main.css}"/>
+    <title>Stack</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <h2 class="col-10">Stack by Anran</h2>
+    </div>
+    <div class="row">
+        <form class="col-6" method="post" action="Index.html" th:action="@{Process}" th:object="${session.stack}">
+            <div>
+                <label>Push input: </label>
+                <input type="text" name="pushInput"/>
+<!--                <span class="error-message" th:if="${#fields.hasErrors('input')}">&nbsp;<span th:errors="*{input}">Input Error</span></span>-->
+            </div>
+            <div style="padding-top: 10px;">
+                <button class="btn btn-success" type="submit" name="action" value="push">push</button>
+                <button class="btn btn-danger" type="submit" name="action" value="pop" th:unless="${#lists.isEmpty(session.stack.getDisplayStack())}">pop</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <table class="table table-striped col-3" th:unless="${#lists.isEmpty(session.stack.getDisplayStack())}">
+            <tr th:each="s: ${session.stack.getDisplayStack()}">
+                <td th:text="${s}">Test</td>
+            </tr>
+        </table>
+        <h4 class="col-6" th:if="${#lists.isEmpty(session.stack.getDisplayStack())}">Stack is empty</h4>
+    </div>
+
+</div>
+
+<script>
+
+</script>
+</body>
+</html>

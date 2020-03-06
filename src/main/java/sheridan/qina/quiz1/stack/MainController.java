@@ -1,9 +1,13 @@
 package sheridan.qina.quiz1.stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -11,29 +15,41 @@ import java.util.Stack;
 
 @Controller
 public class MainController {
+    private final Logger logger = LoggerFactory.getLogger(MainController.class);
 
-    @RequestMapping(value={"/", "Index"})
-    public ModelAndView index(HttpSession httpSession){
-        ModelAndView modelAndView;
-        Stack<String> stack = (Stack<String>) httpSession.getAttribute("stack");
-        if(stack == null){
-            stack = new Stack<String>();
-            stack.push("roast");
-            stack.push("roast");
-            stack.push("life");
-            httpSession.setAttribute("stack", stack);
-        }
-        modelAndView = new ModelAndView("index", "displayStack", new ArrayList(stack));
-        return modelAndView;
+    public MainController() {
     }
 
-    @RequestMapping(value = "Push", method = RequestMethod.POST)
-    public String push(HttpSession httpSession){
+    @GetMapping(value={"/", "Index"})
+    public String index(HttpSession httpSession, Model model){
+        StackObj stack = (StackObj) httpSession.getAttribute("stack");
+        if(stack == null){
+            stack = new StackObj();
+            stack.setInput("roast");
+            stack.setInput("plot");
+            stack.setInput("life");
+            httpSession.setAttribute("stack", stack);
+        }
+        model.addAttribute("stack", stack);
+        return "Index";
+    }
+
+    @RequestMapping(value = "Process", method = RequestMethod.POST, params = "action=push")
+    public String push(@RequestParam(value = "pushInput", defaultValue = "")String pushInput, HttpSession session){
+        logger.trace(pushInput);
+        if(pushInput != "" || pushInput != null){
+            StackObj stack = (StackObj) session.getAttribute("stack");
+            stack.setInput(pushInput);
+            session.setAttribute("stack", stack);
+        }
         return "redirect:Index";
     }
 
-    @RequestMapping(value = "Pop", method = RequestMethod.POST)
-    public String pop(HttpSession httpSession){
+    @RequestMapping(value = "Process", method = RequestMethod.POST, params = "action=pop")
+    public String pop(HttpSession session){
+        StackObj stack = (StackObj) session.getAttribute("stack");
+        stack.setInput("");
+        session.setAttribute("stack", stack);
         return "redirect:Index";
     }
 }
